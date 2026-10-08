@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Painel</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18223a;--text:#eef3ff;--muted:#94a3bd;--accent:#6ea8fe;--good:#45d483;--bad:#ff6b6b;--border:#263451}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(135deg,#09101d,#101a30);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+.wrap{max-width:1400px;margin:auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+h1{font-size:28px;margin:0}.sub{color:var(--muted);margin-top:5px}
+.clock{text-align:right;font-size:25px;font-weight:700}.date{font-size:13px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{background:rgba(18,26,45,.92);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.market{grid-column:span 3}.wide{grid-column:span 6}.half{grid-column:span 4}.full{grid-column:span 12}
+.title{font-weight:700;margin-bottom:14px;font-size:15px}.big{font-size:27px;font-weight:800}.muted{color:var(--muted);font-size:13px}.up{color:var(--good)}.down{color:var(--bad)}
+.market-row{display:flex;justify-content:space-between;align-items:end}.tag{font-size:12px;color:var(--muted);margin-bottom:5px}
+.links{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.link{background:var(--panel2);border:1px solid var(--border);border-radius:13px;padding:14px;text-decoration:none;color:var(--text);transition:.15s}.link:hover{transform:translateY(-2px);border-color:var(--accent)}.icon{font-size:23px;margin-bottom:7px}.link small{color:var(--muted)}
+.file-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.file{padding:15px;background:var(--panel2);border-radius:13px;border:1px solid var(--border);color:var(--text);text-decoration:none}.file:hover{border-color:var(--accent)} 
+.news{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}.news:last-child{border:0}.news b{font-size:14px}.pill{font-size:11px;background:#243250;color:#bcd2ff;padding:4px 8px;border-radius:20px}
+.note{font-size:12px;color:var(--muted);margin-top:12px}
+@media(max-width:900px){.market,.wide,.half{grid-column:span 6}.file-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.wrap{padding:14px}header{align-items:flex-start}.clock{font-size:19px}.market,.wide,.half,.full{grid-column:span 12}.links{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div><h1>Meu Painel</h1><div class="sub">Mercado • clima • investimentos • arquivos • atalhos</div></div>
+<div class="clock"><div id="clock">--:--</div><div class="date" id="date">--</div></div>
+</header>
+
+<div class="grid">
+<section class="card market"><div class="title">💵 Dólar</div><div class="market-row"><div><div class="tag">USD/BRL</div><div class="big">R$ 5,00</div></div><div class="up">+0,00%</div></div><div class="note">Conectaremos cotação em tempo real</div></section>
+<section class="card market"><div class="title">📈 Ibovespa</div><div class="market-row"><div><div class="tag">IBOV</div><div class="big">000.000</div></div><div class="up">+0,00%</div></div><div class="note">Conectaremos mercado em tempo real</div></section>
+<section class="card market"><div class="title">€ Euro</div><div class="market-row"><div><div class="tag">EUR/BRL</div><div class="big">R$ 0,00</div></div><div class="up">+0,00%</div></div><div class="note">Cotação automática na próxima etapa</div></section>
+<section class="card market"><div class="title">₿ Bitcoin</div><div class="market-row"><div><div class="tag">BTC/BRL</div><div class="big">R$ 0,00</div></div><div class="up">+0,00%</div></div><div class="note">Cotação automática na próxima etapa</div></section>
+
+<section class="card half"><div class="title">🌤️ Clima</div><div class="big">— °C</div><div class="muted">Niterói / RJ • condição atual</div><div class="note">Previsão e temperatura serão atualizadas automaticamente.</div></section>
+
+<section class="card half"><div class="title">💰 Investimentos</div><div class="muted">Patrimônio monitorado</div><div class="big">R$ —</div><div class="note">Área preparada para patrimônio, rentabilidade e vencimentos.</div></section>
+
+<section class="card half"><div class="title">📊 Indicadores</div><div class="market-row"><span>Selic</span><b>—</b></div><div class="market-row"><span>IPCA</span><b>—</b></div><div class="market-row"><span>CDI</span><b>—</b></div><div class="note">Indicadores oficiais serão integrados.</div></section>
+
+<section class="card wide"><div class="title">📁 Meus arquivos</div>
+<div class="file-grid">
+<a class="file" href="#"><div class="icon">📄</div><b>Documentos</b><br><small>Arquivos pessoais</small></a>
+<a class="file" href="#"><div class="icon">💰</div><b>Investimentos</b><br><small>XP / relatórios</small></a>
+<a class="file" href="#"><div class="icon">🧾</div><b>Imposto de Renda</b><br><small>Declarações</small></a>
+<a class="file" href="#"><div class="icon">🏠</div><b>Casa</b><br><small>Documentos e contas</small></a>
+<a class="file" href="#"><div class="icon">🚙</div><b>Duster</b><br><small>Manutenção</small></a>
+<a class="file" href="#"><div class="icon">🏍️</div><b>Classic 350</b><br><small>Manutenção</small></a>
+<a class="file" href="#"><div class="icon">🏖️</div><b>Imóveis</b><br><small>Contratos</small></a>
+<a class="file" href="#"><div class="icon">📦</div><b>Outros</b><br><small>Arquivos gerais</small></a>
+</div></section>
+
+<section class="card wide"><div class="title">🔗 Atalhos</div>
+<div class="links">
+<a class="link" href="https://www.xp.com.br" target="_blank"><div class="icon">📈</div><b>XP</b><br><small>Investimentos</small></a>
+<a class="link" href="https://drive.google.com" target="_blank"><div class="icon">☁️</div><b>Google Drive</b><br><small>Arquivos</small></a>
+<a class="link" href="https://mail.google.com" target="_blank"><div class="icon">✉️</div><b>Gmail</b><br><small>E-mail</small></a>
+<a class="link" href="https://web.whatsapp.com" target="_blank"><div class="icon">💬</div><b>WhatsApp</b><br><small>Mensagens</small></a>
+<a class="link" href="https://www.youtube.com" target="_blank"><div class="icon">▶️</div><b>YouTube</b><br><small>Vídeos</small></a>
+<a class="link" href="#" onclick="alert('Aqui podemos colocar qualquer site que você quiser.')"><div class="icon">➕</div><b>Novo atalho</b><br><small>Personalizar</small></a>
+</div></section>
+
+<section class="card full"><div class="title">📰 Notícias</div>
+<div class="news"><span class="pill">ECONOMIA</span><b>Área reservada para notícias e informações de mercado.</b></div>
+<div class="news"><span class="pill">MERCADO</span><b>Podemos adicionar notícias personalizadas por assunto.</b></div>
+<div class="note">Os textos acima são apenas espaços de demonstração. Na próxima etapa, conectamos fontes reais.</div>
+</section>
+</div>
+</div>
+<script>
+function updateClock(){
+ const now=new Date();
+ document.getElementById('clock').textContent=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ document.getElementById('date').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+}
+updateClock(); setInterval(updateClock,1000);
+</script>
+</body>
+</html>
