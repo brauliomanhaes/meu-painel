@@ -15,7 +15,7 @@ h1{font-size:28px;margin:0}.sub{color:var(--muted);margin-top:5px}
 .card{background:rgba(18,26,45,.92);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.16)}
 .market{grid-column:span 3}.wide{grid-column:span 6}.half{grid-column:span 4}.full{grid-column:span 12}
 .title{font-weight:700;margin-bottom:14px;font-size:15px}.big{font-size:27px;font-weight:800}.muted{color:var(--muted);font-size:13px}.up{color:var(--good)}.down{color:var(--bad)}
-.market-row{display:flex;justify-content:space-between;align-items:end}.tag{font-size:12px;color:var(--muted);margin-bottom:5px}
+.market-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.tag{font-size:12px;color:var(--muted);margin-bottom:5px}
 .links{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.link{background:var(--panel2);border:1px solid var(--border);border-radius:13px;padding:14px;text-decoration:none;color:var(--text);transition:.15s}.link:hover{transform:translateY(-2px);border-color:var(--accent)}.icon{font-size:23px;margin-bottom:7px}.link small{color:var(--muted)}
 .file-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.file{padding:15px;background:var(--panel2);border-radius:13px;border:1px solid var(--border);color:var(--text);text-decoration:none}.file:hover{border-color:var(--accent)} 
 .news{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}.news:last-child{border:0}.news b{font-size:14px}.pill{font-size:11px;background:#243250;color:#bcd2ff;padding:4px 8px;border-radius:20px}
@@ -42,7 +42,7 @@ h1{font-size:28px;margin:0}.sub{color:var(--muted);margin-top:5px}
     </div>
     <div id="dolar-var" class="up">--</div>
   </div>
-  <div class="note" id="dolar-status">Atualizando cotação em tempo real...</div>
+  <div class="note" id="dolar-status">Atualizando cotação...</div>
 </section>
 
 <!-- IBOVESPA -->
@@ -84,11 +84,31 @@ h1{font-size:28px;margin:0}.sub{color:var(--muted);margin-top:5px}
   <div class="note" id="btc-status">Atualizando cotação...</div>
 </section>
 
-<section class="card half"><div class="title">🌤️ Clima</div><div class="big">— °C</div><div class="muted">Niterói / RJ • condição atual</div><div class="note">Previsão e temperatura serão atualizadas automaticamente.</div></section>
+<!-- CLIMA -->
+<section class="card half">
+  <div class="title">🌤️ Clima</div>
+  <div class="big" id="clima-temp">— °C</div>
+  <div class="muted" id="clima-desc">Niterói / RJ • condição atual</div>
+  <div class="note" id="clima-status">Carregando previsão...</div>
+</section>
 
-<section class="card half"><div class="title">💰 Investimentos</div><div class="muted">Patrimônio monitorado</div><div class="big">R$ —</div><div class="note">Área preparada para patrimônio, rentabilidade e vencimentos.</div></section>
+<!-- INVESTIMENTOS -->
+<section class="card half">
+  <div class="title">💰 Investimentos</div>
+  <div class="muted">Patrimônio monitorado</div>
+  <!-- Alterar o valor abaixo conforme sua preferência ou planilha -->
+  <div class="big" id="patrimonio-valor">R$ 0,00</div>
+  <div class="note">Atualizado via controle pessoal</div>
+</section>
 
-<section class="card half"><div class="title">📊 Indicadores</div><div class="market-row"><span>Selic</span><b>—</b></div><div class="market-row"><span>IPCA</span><b>—</b></div><div class="market-row"><span>CDI</span><b>—</b></div><div class="note">Indicadores oficiais serão integrados.</div></section>
+<!-- INDICADORES -->
+<section class="card half">
+  <div class="title">📊 Indicadores</div>
+  <div class="market-row"><span>Selic</span><b id="taxa-selic">—%</b></div>
+  <div class="market-row"><span>IPCA (12m)</span><b id="taxa-ipca">—%</b></div>
+  <div class="market-row"><span>CDI</span><b id="taxa-cdi">—%</b></div>
+  <div class="note">Taxas oficiais do Banco Central e B3</div>
+</section>
 
 <section class="card wide"><div class="title">📁 Meus arquivos</div>
 <div class="file-grid">
@@ -130,7 +150,7 @@ function updateClock(){
 updateClock(); 
 setInterval(updateClock,1000);
 
-// Cotações (Dólar, Euro e Bitcoin)
+// 1. Cotações (Dólar, Euro e Bitcoin)
 async function fetchCotacoes() {
   try {
     const res = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL');
@@ -159,12 +179,52 @@ async function fetchCotacoes() {
     if(data.BTCBRL) formatar(data.BTCBRL, 'btc-valor', 'btc-var', 'btc-status');
 
   } catch(e) {
-    console.error('Erro ao buscar cotações:', e);
+    console.error('Erro cotações:', e);
   }
 }
 
+// 2. Clima em Niterói (Latitude: -22.88, Longitude: -43.10)
+async function fetchClima() {
+  try {
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-22.88&longitude=-43.10&current_weather=true');
+    const data = await res.json();
+    if(data.current_weather) {
+      const temp = Math.round(data.current_weather.temperature);
+      document.getElementById('clima-temp').innerText = `${temp} °C`;
+      document.getElementById('clima-status').innerText = `Vento: ${data.current_weather.windspeed} km/h • Niterói`;
+    }
+  } catch(e) {
+    console.error('Erro clima:', e);
+  }
+}
+
+// 3. Indicadores Financeiros (BrasilAPI)
+async function fetchIndicadores() {
+  try {
+    const res = await fetch('https://brasilapi.com.br/api/taxas/v1');
+    const data = await res.json();
+    
+    const selic = data.find(i => i.nome === 'Selic');
+    const cdi = data.find(i => i.nome === 'CDI');
+    const ipca = data.find(i => i.nome === 'IPCA');
+
+    if(selic) document.getElementById('taxa-selic').innerText = `${selic.valor.toFixed(2)}%`;
+    if(cdi) document.getElementById('taxa-cdi').innerText = `${cdi.valor.toFixed(2)}%`;
+    if(ipca) document.getElementById('taxa-ipca').innerText = `${ipca.valor.toFixed(2)}%`;
+
+  } catch(e) {
+    console.error('Erro indicadores:', e);
+  }
+}
+
+// Executa todas as buscas ao carregar
 fetchCotacoes();
-setInterval(fetchCotacoes, 60000); // Atualiza automaticamente a cada 1 minuto
+fetchClima();
+fetchIndicadores();
+
+// Agendamento de atualizações
+setInterval(fetchCotacoes, 60000);  // 1 minuto
+setInterval(fetchClima, 600000);     // 10 minutos
 </script>
 </body>
 </html>
