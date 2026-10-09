@@ -32,10 +32,57 @@ h1{font-size:28px;margin:0}.sub{color:var(--muted);margin-top:5px}
 </header>
 
 <div class="grid">
-<section class="card market"><div class="title">💵 Dólar</div><div class="market-row"><div><div class="tag">USD/BRL</div><div class="big">R$ 5,00</div></div><div class="up">+0,00%</div></div><div class="note">Conectaremos cotação em tempo real</div></section>
-<section class="card market"><div class="title">📈 Ibovespa</div><div class="market-row"><div><div class="tag">IBOV</div><div class="big">000.000</div></div><div class="up">+0,00%</div></div><div class="note">Conectaremos mercado em tempo real</div></section>
-<section class="card market"><div class="title">€ Euro</div><div class="market-row"><div><div class="tag">EUR/BRL</div><div class="big">R$ 0,00</div></div><div class="up">+0,00%</div></div><div class="note">Cotação automática na próxima etapa</div></section>
-<section class="card market"><div class="title">₿ Bitcoin</div><div class="market-row"><div><div class="tag">BTC/BRL</div><div class="big">R$ 0,00</div></div><div class="up">+0,00%</div></div><div class="note">Cotação automática na próxima etapa</div></section>
+<!-- DÓLAR -->
+<section class="card market">
+  <div class="title">💵 Dólar</div>
+  <div class="market-row">
+    <div>
+      <div class="tag">USD/BRL</div>
+      <div class="big" id="dolar-valor">R$ --</div>
+    </div>
+    <div id="dolar-var" class="up">--</div>
+  </div>
+  <div class="note" id="dolar-status">Atualizando cotação em tempo real...</div>
+</section>
+
+<!-- IBOVESPA -->
+<section class="card market">
+  <div class="title">📈 Ibovespa</div>
+  <div class="market-row">
+    <div>
+      <div class="tag">IBOV</div>
+      <div class="big">000.000</div>
+    </div>
+    <div class="up">+0,00%</div>
+  </div>
+  <div class="note">Conectaremos mercado em tempo real</div>
+</section>
+
+<!-- EURO -->
+<section class="card market">
+  <div class="title">€ Euro</div>
+  <div class="market-row">
+    <div>
+      <div class="tag">EUR/BRL</div>
+      <div class="big" id="euro-valor">R$ --</div>
+    </div>
+    <div id="euro-var" class="up">--</div>
+  </div>
+  <div class="note" id="euro-status">Atualizando cotação...</div>
+</section>
+
+<!-- BITCOIN -->
+<section class="card market">
+  <div class="title">₿ Bitcoin</div>
+  <div class="market-row">
+    <div>
+      <div class="tag">BTC/BRL</div>
+      <div class="big" id="btc-valor">R$ --</div>
+    </div>
+    <div id="btc-var" class="up">--</div>
+  </div>
+  <div class="note" id="btc-status">Atualizando cotação...</div>
+</section>
 
 <section class="card half"><div class="title">🌤️ Clima</div><div class="big">— °C</div><div class="muted">Niterói / RJ • condição atual</div><div class="note">Previsão e temperatura serão atualizadas automaticamente.</div></section>
 
@@ -72,13 +119,52 @@ h1{font-size:28px;margin:0}.sub{color:var(--muted);margin-top:5px}
 </section>
 </div>
 </div>
+
 <script>
+// Relógio e Data
 function updateClock(){
  const now=new Date();
  document.getElementById('clock').textContent=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
  document.getElementById('date').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
 }
-updateClock(); setInterval(updateClock,1000);
+updateClock(); 
+setInterval(updateClock,1000);
+
+// Cotações (Dólar, Euro e Bitcoin)
+async function fetchCotacoes() {
+  try {
+    const res = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL');
+    const data = await res.json();
+
+    const formatar = (item, idVal, idVar, idStatus) => {
+      const val = parseFloat(item.bid).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const pct = parseFloat(item.pctChange);
+      const elVal = document.getElementById(idVal);
+      const elVar = document.getElementById(idVar);
+      const elStat = document.getElementById(idStatus);
+
+      if(elVal) elVal.innerText = val;
+      if(elVar) {
+        elVar.innerText = (pct > 0 ? '+' : '') + pct.toFixed(2) + '%';
+        elVar.className = pct >= 0 ? 'up' : 'down';
+      }
+      if(elStat) {
+        const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        elStat.innerText = `Atualizado às ${hora}`;
+      }
+    };
+
+    if(data.USDBRL) formatar(data.USDBRL, 'dolar-valor', 'dolar-var', 'dolar-status');
+    if(data.EURBRL) formatar(data.EURBRL, 'euro-valor', 'euro-var', 'euro-status');
+    if(data.BTCBRL) formatar(data.BTCBRL, 'btc-valor', 'btc-var', 'btc-status');
+
+  } catch(e) {
+    console.error('Erro ao buscar cotações:', e);
+  }
+}
+
+fetchCotacoes();
+setInterval(fetchCotacoes, 60000); // Atualiza automaticamente a cada 1 minuto
 </script>
 </body>
 </html>
